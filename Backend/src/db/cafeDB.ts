@@ -29,18 +29,6 @@ class SociosService {
             socio.NombreCompleto === username && socio.Contrasenia === password
         ) || null;
     }
-
-    async getAllMembers(): Promise<Socio[]> {
-        return [...this.sociosDB];
-    }
-
-    async getMemberByMembershipNumber(NumMembresia: string): Promise<Socio | null> {
-        return this.sociosDB.find(n => n.NumMembresia === NumMembresia) || null;
-    }
-
-    async checkMembershipExists(NumMembresia: string): Promise<boolean> {
-        return this.sociosDB.some(n => n.NumMembresia === NumMembresia);
-    }
 }
 
 export const sociosService = new SociosService()

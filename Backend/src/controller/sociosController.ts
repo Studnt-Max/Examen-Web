@@ -11,16 +11,4 @@ export class sociosController {
     async verifyCredentials(NombreCompleto: string, Contrasenia: string): Promise<Socio | null> {
         return this.dbService.findByCredentials(NombreCompleto, Contrasenia);
     }
-
-    async getAllMembers(): Promise<Socio[]> {
-        return this.dbService.getAllMembers();
-    }
-
-    async getMemberByMembershipNumber(NumMembresia: string): Promise<Socio | null> {
-        return this.dbService.getMemberByMembershipNumber(NumMembresia);
-    }
-
-    async checkMembershipExists(NumMembresia: string): Promise<boolean> {
-        return this.dbService.checkMembershipExists(NumMembresia);
-    }
 }
