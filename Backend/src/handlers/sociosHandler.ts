@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { sociosController } from '../controller/sociosController';
 
 export class sociosHandler {
+    static login: any;
     constructor(private sociosController: sociosController) {}
 
     async login(request: Request, response: Response) {
