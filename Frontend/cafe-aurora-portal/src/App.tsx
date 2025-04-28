@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 interface Socio {
   usuario: string;
-  contrasena: string;
   nombreCompleto: string;
   numeroMembresia: string;
 }
-
-const sociosRegistrados: Socio[] = [
-  { usuario: 'sandra.g', contrasena: 'latte123', nombreCompleto: 'Sandra García', numeroMembresia: '5001' },
-  { usuario: 'roberto.m', contrasena: 'capuccino456', nombreCompleto: 'Roberto Martínez', numeroMembresia: '5002' },
-  { usuario: 'esteban.l', contrasena: 'espresso789', nombreCompleto: 'Esteban López', numeroMembresia: '5003' },
-];
 
 function App() {
   const [usuario, setUsuario] = useState('');
@@ -28,35 +22,50 @@ function App() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError('');
     setSocioAutenticado(null);
 
-    const socioEncontrado = sociosRegistrados.find(
-      (socio) => socio.usuario === usuario && socio.contrasena === contrasena
-    );
+    try {
+      const response = await axios.post('http://localhost:3000/api/members/login', {
+        username: usuario,
+        password: contrasena
+      });
 
-    if (socioEncontrado) {
-      setSocioAutenticado(socioEncontrado);
-    } else {
-      setError('Usuario o contraseña incorrectos.');
+      setSocioAutenticado({
+        usuario,
+        nombreCompleto: response.data.fullName,
+        numeroMembresia: response.data.membershipNumber.toString()
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data.error || 'Error al autenticar');
+      } else {
+        setError('Ocurrió un error inesperado');
+      }
     }
   };
 
   if (socioAutenticado) {
     return (
-      <div>
+      <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
         <h1>¡Hola, {socioAutenticado.nombreCompleto}!</h1>
         <p>Gracias por ser parte de Café Aurora.</p>
+        <p>Tu número de membresía es: {socioAutenticado.numeroMembresia}</p>
+        <button onClick={() => {
+          setSocioAutenticado(null);
+          setUsuario('');
+          setContrasena('');
+        }}>Cerrar sesión</button>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>Portal de Socios Café Aurora</h1>
-      <form onSubmit={handleSubmit}>
+    <div style={{ padding: '20px', maxWidth: '400px', margin: '0 auto' }}>
+      <h1 style={{ textAlign: 'center' }}>Portal de Socios Café Aurora</h1>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <div>
           <label htmlFor="usuario">Usuario:</label>
           <input
@@ -65,6 +74,7 @@ function App() {
             name="usuario"
             value={usuario}
             onChange={handleInputChange}
+            style={{ width: '100%', padding: '8px' }}
           />
         </div>
         <div>
@@ -75,11 +85,17 @@ function App() {
             name="contrasena"
             value={contrasena}
             onChange={handleInputChange}
+            style={{ width: '100%', padding: '8px' }}
           />
         </div>
-        <button type="submit">Iniciar Sesión</button>
+        <button 
+          type="submit"
+          style={{ padding: '10px', backgroundColor: '#4CAF50', color: 'white', border: 'none' }}
+        >
+          Iniciar Sesión
+        </button>
       </form>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
     </div>
   );
 }
