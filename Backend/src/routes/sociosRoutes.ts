@@ -1,10 +1,10 @@
 import { Router } from "express";
-// import sociosController 
+import { sociosController } from "../controller/sociosController";
 import { sociosService } from "../db/cafeDB"; 
 // import sociosHandler
 
 const router = Router();
-// const sociosController = new SociosController(SociosService);
+ const SociosController = new sociosController(sociosService);
 // const sociosHandler = new (SociosHandler);
 
 
