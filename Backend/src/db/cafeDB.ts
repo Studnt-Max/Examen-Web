@@ -5,7 +5,7 @@ interface Socio {
     NumMembresia: string
 }
 
-class sociosService {
+class SociosService {
     private sociosDB : Socio[] = [
         {   Usuario: "sandra.g",
             Contrasenia: "latte123",
@@ -27,4 +27,4 @@ class sociosService {
     // async ....
 }
 
-export const SociosService = new sociosService()
+export const sociosService = new SociosService()
